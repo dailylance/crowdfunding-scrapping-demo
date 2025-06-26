@@ -1,0 +1,20 @@
+{
+	"name": "crowdfunding-testing",
+	"version": "1.0.0",
+	"main": "server.js",
+	"scripts": {
+		"start": "node server.js",
+		"dev": "node server.js",
+		"old": "node index.js",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"description": "",
+	"dependencies": {
+		"cors": "^2.8.5",
+		"express": "^4.21.2",
+		"puppeteer": "^24.10.2"
+	}
+}
