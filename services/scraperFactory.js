@@ -24,7 +24,7 @@ class ScraperFactory {
 			{
 				name: "kickstarter",
 				displayName: "Kickstarter",
-				description: "Creative projects seeking funding (Coming Soon)",
+				description: "Creative projects seeking funding",
 			},
 		];
 	}
