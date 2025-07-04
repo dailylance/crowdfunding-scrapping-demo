@@ -26,7 +26,7 @@ class SearchController {
 
 	// Main search endpoint
 	static async search(req, res) {
-		const { platform, category, keyword } = req.body;
+		const { platform, category, keyword, language } = req.body;
 
 		// Validation
 		if (!platform || !keyword) {
@@ -40,22 +40,24 @@ class SearchController {
 			console.log(
 				`🔍 Search request: Platform="${platform}", Category="${
 					category || "all"
-				}", Keyword="${keyword}"`
+				}", Keyword="${keyword}", Language="${language || "en"}"`
 			);
 
 			// Get appropriate scraper
 			const scraper = ScraperFactory.getScraper(platform);
 
-			// Perform scraping
-			const results = await scraper.scrape(category || "all", keyword);
+			// Perform scraping with language option
+			const options = { language: language || "en" };
+			const results = await scraper.scrape(category || "all", keyword, options);
 
 			console.log(`🎉 Search completed: ${results.length} results found`);
 
 			// Save results to file
-			const fileName = `${platform}_${category || "all"}_${keyword.replace(
-				/\s+/g,
-				"_"
-			)}_results.json`;
+			const sanitizedKeyword =
+				keyword.replace(/[^\w\s-]/gi, "").replace(/\s+/g, "_") || "search";
+			const fileName = `${platform}_${
+				category || "all"
+			}_${sanitizedKeyword}_results.json`;
 			const filePath = `results/${fileName}`;
 
 			// Ensure results directory exists

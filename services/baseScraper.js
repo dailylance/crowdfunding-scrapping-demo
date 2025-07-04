@@ -13,9 +13,17 @@ class BaseScraper {
 				"--no-sandbox",
 				"--disable-setuid-sandbox",
 				"--disable-dev-shm-usage",
+				"--disable-background-timer-throttling",
+				"--disable-backgrounding-occluded-windows",
+				"--disable-renderer-backgrounding",
 			],
 		});
 		this.page = await this.browser.newPage();
+
+		// Set faster timeouts
+		await this.page.setDefaultTimeout(8000);
+		await this.page.setDefaultNavigationTimeout(8000);
+
 		await this.page.setUserAgent(
 			"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
 		);
