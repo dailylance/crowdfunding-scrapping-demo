@@ -1,5 +1,6 @@
 const IndiegogoScraper = require("./indiegogoScraper");
 const KickstarterScraper = require("./kickstarterScraper");
+const WadizScraper = require("./wadizScraper");
 
 class ScraperFactory {
 	static getScraper(platform) {
@@ -8,6 +9,8 @@ class ScraperFactory {
 				return new IndiegogoScraper();
 			case "kickstarter":
 				return new KickstarterScraper();
+			case "wadiz":
+				return new WadizScraper();
 			// Add more platforms here
 			default:
 				throw new Error(`Unsupported platform: ${platform}`);
@@ -25,6 +28,11 @@ class ScraperFactory {
 				name: "kickstarter",
 				displayName: "Kickstarter",
 				description: "Creative projects seeking funding",
+			},
+			{
+				name: "wadiz",
+				displayName: "Wadiz (와디즈)",
+				description: "Korean crowdfunding platform for innovative projects",
 			},
 		];
 	}

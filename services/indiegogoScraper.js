@@ -525,15 +525,24 @@ class IndiegogoScraper extends BaseScraper {
 					`📂 Found ${projectLinks.length} projects in ${actualCategory} category`
 				);
 
-				// Scrape ALL projects and filter for relevance (no limit)
+				// Scrape ALL projects and filter for relevance (more lenient for category searches)
 				for (const url of projectLinks) {
 					try {
 						const data = await this.scrapeCampaign(page, url);
 						if (data.title) {
-							const isRelevant = this.isContentRelevant(data, keyword);
+							// Use the enhanced base relevance check with category context
+							const isRelevant = this.isContentRelevant(
+								data,
+								keyword,
+								actualCategory
+							);
 							if (isRelevant) {
 								results.push(data);
 								console.log(`✅ Found relevant: ${data.title}`);
+							} else {
+								console.log(
+									`⚠️ Filtered out: ${data.title} (not relevant to "${keyword}" in ${actualCategory})`
+								);
 							}
 						}
 					} catch (err) {

@@ -200,7 +200,8 @@ class KickstarterScraper extends BaseScraper {
 				console.log(`✅ Found ${projects.length} projects from scraping`);
 				const relevantProjects = this.filterAndDeduplicateProjects(
 					projects,
-					keyword
+					keyword,
+					category // Pass category to filtering method
 				);
 				if (relevantProjects.length > 0) {
 					return relevantProjects;
@@ -648,17 +649,18 @@ class KickstarterScraper extends BaseScraper {
 		}
 	}
 
-	filterAndDeduplicateProjects(projects, keyword) {
+	filterAndDeduplicateProjects(projects, keyword, category = null) {
 		const uniqueProjects = [];
 		const seenUrls = new Set();
 
+		// More lenient relevance check
 		for (const project of projects) {
 			if (seenUrls.has(project.url)) {
 				continue;
 			}
 
-			// More lenient relevance check
-			if (this.isProjectRelevant(project, keyword)) {
+			// Use the enhanced base relevance check with category context
+			if (this.isContentRelevant(project, keyword, category)) {
 				seenUrls.add(project.url);
 				uniqueProjects.push(project);
 			}
@@ -682,39 +684,6 @@ class KickstarterScraper extends BaseScraper {
 			`📝 Filtered to ${uniqueProjects.length} unique, relevant projects`
 		);
 		return uniqueProjects.slice(0, 10);
-	}
-
-	isProjectRelevant(project, keyword) {
-		const searchTerm = keyword.toLowerCase();
-		const title = project.title.toLowerCase();
-		const description = project.description.toLowerCase();
-		const url = project.url.toLowerCase();
-
-		// Check if keyword appears in title, description, or URL
-		return (
-			title.includes(searchTerm) ||
-			description.includes(searchTerm) ||
-			url.includes(searchTerm) ||
-			this.isSemanticMatch(title, searchTerm)
-		);
-	}
-
-	isSemanticMatch(title, keyword) {
-		const gameTerms = ["game", "board", "card", "dice", "rpg", "tabletop"];
-		const techTerms = ["tech", "gadget", "device", "smart", "app"];
-		const artTerms = ["art", "craft", "design", "creative"];
-
-		if (gameTerms.some((term) => keyword.includes(term))) {
-			return gameTerms.some((term) => title.includes(term));
-		}
-		if (techTerms.some((term) => keyword.includes(term))) {
-			return techTerms.some((term) => title.includes(term));
-		}
-		if (artTerms.some((term) => keyword.includes(term))) {
-			return artTerms.some((term) => title.includes(term));
-		}
-
-		return false;
 	}
 
 	getCategorySlug(category, keyword) {
