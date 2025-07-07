@@ -1,4 +1,6 @@
-const puppeteer = require("puppeteer");
+const puppeteer = require("puppeteer-extra");
+const StealthPlugin = require("puppeteer-extra-plugin-stealth");
+puppeteer.use(StealthPlugin());
 
 class BaseScraper {
 	constructor() {
@@ -20,9 +22,9 @@ class BaseScraper {
 		});
 		this.page = await this.browser.newPage();
 
-		// Set faster timeouts
-		await this.page.setDefaultTimeout(8000);
-		await this.page.setDefaultNavigationTimeout(8000);
+		// Set shorter timeouts for faster scraping
+		await this.page.setDefaultTimeout(15000);
+		await this.page.setDefaultNavigationTimeout(15000);
 
 		await this.page.setUserAgent(
 			"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
@@ -420,6 +422,10 @@ class BaseScraper {
 
 	getName() {
 		throw new Error("getName method must be implemented by child class");
+	}
+
+	setLanguage(lang) {
+		// No-op for scrapers that do not support language switching
 	}
 }
 

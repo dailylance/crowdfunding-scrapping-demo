@@ -28,11 +28,19 @@ class SearchController {
 	static async search(req, res) {
 		const { platform, category, keyword, language } = req.body;
 
-		// Validation
-		if (!platform || !keyword) {
+		// Validation - platform is required, but keyword can be empty if category is provided
+		if (!platform) {
 			return res.status(400).json({
 				success: false,
-				error: "Platform and keyword are required",
+				error: "Platform is required",
+			});
+		}
+
+		// If no keyword and no category, return error
+		if (!keyword && !category) {
+			return res.status(400).json({
+				success: false,
+				error: "Either keyword or category is required",
 			});
 		}
 
@@ -48,13 +56,18 @@ class SearchController {
 
 			// Perform scraping with language option
 			const options = { language: language || "en" };
-			const results = await scraper.scrape(category || "all", keyword, options);
+			const results = await scraper.scrape(
+				category || "all",
+				keyword || "",
+				options
+			);
 
 			console.log(`🎉 Search completed: ${results.length} results found`);
 
 			// Save results to file
 			const sanitizedKeyword =
-				keyword.replace(/[^\w\s-]/gi, "").replace(/\s+/g, "_") || "search";
+				(keyword || "").replace(/[^\w\s-]/gi, "").replace(/\s+/g, "_") ||
+				"category";
 			const fileName = `${platform}_${
 				category || "all"
 			}_${sanitizedKeyword}_results.json`;
