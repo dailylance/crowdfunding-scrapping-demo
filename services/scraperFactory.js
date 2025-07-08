@@ -3,6 +3,7 @@ const KickstarterScraper = require("./kickstarterScraper");
 const WadizScraper = require("./wadizScraper");
 const CampfireScraper = require("./campfireScraper");
 const MakuakeScraper = require("./makuakeScraper");
+const FlyingVScraper = require("./flyingvScraper");
 
 class ScraperFactory {
 	static getScraper(platform) {
@@ -17,6 +18,8 @@ class ScraperFactory {
 				return new CampfireScraper();
 			case "makuake":
 				return new MakuakeScraper();
+			case "flyingv":
+				return new FlyingVScraper();
 			// Add more platforms here
 			default:
 				throw new Error(`Unsupported platform: ${platform}`);
@@ -48,7 +51,13 @@ class ScraperFactory {
 			{
 				name: "makuake",
 				displayName: "Makuake (マクアケ)",
-				description: "Japanese crowdfunding platform for new products and ideas",
+				description:
+					"Japanese crowdfunding platform for new products and ideas",
+			},
+			{
+				name: "flyingv",
+				displayName: "FlyingV (嘖嘖)",
+				description: "Taiwanese crowdfunding platform for creative projects",
 			},
 		];
 	}

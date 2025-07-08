@@ -11,6 +11,10 @@ A scalable web scraper for crowdfunding platforms built with Node.js, Express, a
 │   ├── baseScraper.js    # Base scraper class
 │   ├── indiegogoScraper.js
 │   ├── kickstarterScraper.js
+│   ├── makuakeScraper.js
+│   ├── wadizScraper.js
+│   ├── campfireScraper.js
+│   ├── flyingvScraper.js
 │   └── scraperFactory.js
 ├── routes/               # API routes
 │   └── api.js
@@ -168,14 +172,48 @@ Import the following requests:
 ### ✅ Indiegogo (Fully Implemented)
 
 - **Categories**: 25+ categories across Tech & Innovation, Creative Works, and Community Projects
-- **Features**: Complete scraping with all requested fields
+- **Features**: Complete scraping with all requested fields, timeout handling improved
 - **Filtering**: Smart relevance filtering to exclude mismatched products
+- **Status**: Production ready with 30-second timeout handling
 
-### 🚧 Kickstarter (Coming Soon)
+### ✅ Makuake (Fully Implemented)
+
+- **Categories**: 20+ categories including technology, fashion, food, and more
+- **Features**: Complete scraping with Japanese/English translation
+- **Filtering**: Category-based filtering and enhanced creator extraction
+- **Status**: Production ready with accurate creator extraction
+
+### ✅ FlyingV (Fully Implemented)
+
+- **Categories**: 6 official categories:
+  - Technology Design (科技設計)
+  - Music (音樂)
+  - Art Films (藝術影視)
+  - Life (生活)
+  - Public Place (公共在地)
+  - Game Publishing (遊戲出版)
+- **Features**: Complete scraping with Traditional Chinese/English translation
+- **Data Format**: Normalized format matching Indiegogo standard
+- **Filtering**: Category-based filtering for Taiwanese crowdfunding projects
+- **Status**: Production ready with enhanced project owner extraction and normalized output
+
+### 🚧 Kickstarter (Template Ready)
 
 - **Status**: Template ready, implementation in progress
 - **Categories**: 16 main categories
-- **Timeline**: Next development phase
+- **Timeline**: Available for implementation
+
+### 🚧 Wadiz (Template Ready)
+
+- **Status**: Template ready, implementation in progress
+- **Categories**: Korean crowdfunding platform
+- **Timeline**: Available for implementation
+
+### 🚧 CAMPFIRE (Template Ready)
+
+- **Status**: Template ready, implementation in progress
+- **Categories**: Japanese crowdfunding platform
+- **Timeline**: Available for implementation
 
 ## 🔧 Adding New Platforms
 
