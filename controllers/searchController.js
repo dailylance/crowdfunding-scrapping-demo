@@ -52,7 +52,8 @@ class SearchController {
 			);
 
 			// Get appropriate scraper
-			const scraper = ScraperFactory.getScraper(platform);
+			const normalizedPlatform = platform.toLowerCase();
+			const scraper = ScraperFactory.getScraper(normalizedPlatform);
 
 			// Perform scraping with language option
 			const options = { language: language || "en" };

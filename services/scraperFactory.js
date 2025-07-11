@@ -2,6 +2,7 @@ const IndiegogoScraper = require("./indiegogoScraper");
 const KickstarterScraper = require("./kickstarterScraper");
 const WadizScraper = require("./wadizScraper");
 const CampfireScraper = require("./campfireScraper");
+const MachiyaScraper = require("./machiyaScraper");
 const MakuakeScraper = require("./makuakeScraper");
 const FlyingVScraper = require("./flyingvScraper");
 const GreenFundingScraper = require("./greenfundingScraper");
@@ -18,6 +19,8 @@ class ScraperFactory {
 				return new WadizScraper();
 			case "campfire":
 				return new CampfireScraper();
+			case "machiya":
+				return new MachiyaScraper();
 			case "makuake":
 				return new MakuakeScraper();
 			case "flyingv":
@@ -53,6 +56,12 @@ class ScraperFactory {
 				name: "campfire",
 				displayName: "CAMPFIRE (キャンプファイヤー)",
 				description: "Japanese crowdfunding platform for creative projects",
+			},
+			{
+				name: "machiya",
+				displayName: "CAMPFIRE Machi-ya (キャンプファイヤー町や)",
+				description:
+					"Japanese crowdfunding platform for lifestyle and consumer products",
 			},
 			{
 				name: "makuake",
