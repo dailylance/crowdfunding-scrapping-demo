@@ -5,8 +5,9 @@
 	"scripts": {
 		"start": "node server.js",
 		"dev": "node server.js",
-		"old": "node index.js",
-		"test": "echo \"Error: no test specified\" && exit 1"
+		"test": "node test_automation.js",
+		"demo": "node demo_automation.js",
+		"old": "node index.js"
 	},
 	"keywords": [],
 	"author": "",
