@@ -1,0 +1,22 @@
+{
+  "success": true,
+  "platform": "greenfunding",
+  "category": "all",
+  "keyword": "Music",
+  "count": 0,
+  "enhanced_count": 0,
+  "error_count": 0,
+  "enhancement_rate": "0%",
+  "generated_at": "2025-07-19T12:10:42.091Z",
+  "processing_summary": {
+    "total_projects": 0,
+    "ocr_enhanced": 0,
+    "ocr_errors": 0,
+    "complete_without_ocr": 0
+  },
+  "file": "greenfunding_english_all.json",
+  "language": "english",
+  "folder": "greenfunding_all",
+  "translation_note": "All OCR enhanced fields are in English. Non-enhanced fields may remain in original language.",
+  "results": []
+}

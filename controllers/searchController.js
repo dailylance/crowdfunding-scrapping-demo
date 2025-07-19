@@ -1,5 +1,6 @@
 const ScraperFactory = require("../services/scraperFactory");
 const OCRIntegrationService = require("../services/ocrIntegrationService");
+const DatabaseService = require("../services/databaseService");
 const fs = require("fs").promises;
 const path = require("path");
 
@@ -26,21 +27,44 @@ class SearchController {
 		}
 	}
 
-	// Enhanced search endpoint with OCR integration
+	// Enhanced search endpoint with OCR integration and database storage
 	static async search(req, res) {
+		console.log("🔍 Search endpoint called");
+		console.log("📋 Request body:", JSON.stringify(req.body, null, 2));
+		console.log("📄 Request headers:", req.headers);
+
 		const {
 			platform,
 			category,
 			keyword,
 			language,
 			enableOCR = true,
+			userId, // Add userId parameter
 		} = req.body;
 
-		// Validation - platform is required, but keyword can be empty if category is provided
+		console.log("📊 Extracted params:", {
+			platform,
+			category,
+			keyword,
+			language,
+			enableOCR,
+			userId,
+		});
+
+		// Validation - platform and userId are required
 		if (!platform) {
+			console.log("❌ Missing platform");
 			return res.status(400).json({
 				success: false,
 				error: "Platform is required",
+			});
+		}
+
+		if (!userId) {
+			console.log("❌ Missing userId");
+			return res.status(400).json({
+				success: false,
+				error: "User ID is required",
 			});
 		}
 
@@ -54,12 +78,21 @@ class SearchController {
 
 		try {
 			console.log(
-				`🔍 Search request: Platform="${platform}", Category="${
+				`🔍 Search request: User="${userId}", Platform="${platform}", Category="${
 					category || "all"
 				}", Keyword="${keyword}", Language="${
 					language || "en"
 				}", OCR="${enableOCR}"`
 			);
+
+			// Verify user exists
+			const user = await DatabaseService.findUserById(userId);
+			if (!user) {
+				return res.status(404).json({
+					success: false,
+					error: "User not found",
+				});
+			}
 
 			// Get appropriate scraper
 			const normalizedPlatform = platform.toLowerCase();
@@ -90,57 +123,70 @@ class SearchController {
 
 			console.log(`🎉 Search completed: ${results.length} results found`);
 
-			if (!results || results.length === 0) {
-				return res.json({
-					success: true,
-					platform,
-					category: category || "all",
-					keyword,
-					count: 0,
-					results: [],
-					message: "No projects found",
-				});
+			// Prepare enhanced results with metadata
+			const enhancedResults = results.map((result) => ({
+				...result,
+				platform: platform,
+				category: category || "all",
+				keyword: keyword || "",
+				language: language || "en",
+				ocrEnabled: enableOCR,
+			}));
+
+			// Create search record in database
+			const searchData = {
+				platform,
+				category: category || "all",
+				keyword: keyword || "",
+				results: enhancedResults,
+				enableOCR,
+				language: language || "en",
+			};
+
+			const searchRecord = await DatabaseService.createSearch(
+				userId,
+				searchData
+			);
+
+			// Store individual scraped data items
+			if (enhancedResults.length > 0) {
+				await DatabaseService.storeScrapedData(
+					userId,
+					searchRecord.id,
+					enhancedResults
+				);
 			}
 
-			// Save enhanced results
-			let output, filepath;
+			// Also save to file for backward compatibility (optional)
 			if (enableOCR) {
-				const saveResult = await scraper.saveEnhancedResults(
+				await scraper.saveEnhancedResults(
 					results,
 					platform,
 					category || "all",
 					keyword || "category"
 				);
-				output = saveResult.output;
-				filepath = saveResult.filepath;
-			} else {
-				// Standard save for non-OCR results
-				const sanitizedKeyword =
-					(keyword || "").replace(/[^\w\s-]/gi, "").replace(/\s+/g, "_") ||
-					"category";
-				const fileName = `${platform}_${
-					category || "all"
-				}_${sanitizedKeyword}_results.json`;
-				filepath = path.join(__dirname, "../results", fileName);
-
-				// Ensure results directory exists
-				await fs.mkdir(path.join(__dirname, "../results"), { recursive: true });
-
-				output = {
-					success: true,
-					platform: platform,
-					category: category || "all",
-					keyword: keyword,
-					count: results.length,
-					file: fileName,
-					generated_at: new Date().toISOString(),
-					results: results,
-				};
-
-				await fs.writeFile(filepath, JSON.stringify(output, null, 2));
 			}
 
-			res.json(output);
+			// Return response with search ID for frontend to fetch detailed data
+			const response = {
+				success: true,
+				platform,
+				category: category || "all",
+				keyword,
+				count: enhancedResults.length,
+				results: enhancedResults,
+				searchId: searchRecord.id, // Include search ID for frontend
+				generated_at: new Date().toISOString(),
+				message:
+					enhancedResults.length > 0
+						? `Found ${enhancedResults.length} projects`
+						: "No projects found",
+			};
+
+			console.log(
+				`✅ Search completed and saved to database for user: ${userId}`
+			);
+			res.json(response);
 		} catch (error) {
 			console.error("Search error:", error);
 			res.status(500).json({
