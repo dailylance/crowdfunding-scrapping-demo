@@ -133,6 +133,8 @@ class SearchController {
 				ocrEnabled: enableOCR,
 			}));
 
+			console.log("🔍 Enhanced results:", enhancedResults);
+
 			// Create search record in database
 			const searchData = {
 				platform,
@@ -142,6 +144,8 @@ class SearchController {
 				enableOCR,
 				language: language || "en",
 			};
+
+			console.log("🔍 Search data:", searchData);
 
 			const searchRecord = await DatabaseService.createSearch(
 				userId,
